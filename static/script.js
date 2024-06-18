@@ -87,12 +87,14 @@ const vue = new Vue({
                 if (done) break;
                 const text = new TextDecoder("utf-8").decode(value);
                 text.split("\n").forEach((t) => {
-                    if (!t) return;
-                    runningText += t;
-                    const result = JSON.parse(runningText);
-                    if (result.content)
-                        talk.messages[talk.messages.length - 1].content = result.content
-                    runningText = "";
+                    try {
+                        if (!t) return;
+                        runningText += t;
+                        const result = JSON.parse(runningText);
+                        if (result.content)
+                            talk.messages[talk.messages.length - 1].content = result.content
+                        runningText = "";
+                    } catch { } // JSONパースに失敗した場合は無視する(入力途中はあり得る)
                 });
             }
             this.receiving = false;
