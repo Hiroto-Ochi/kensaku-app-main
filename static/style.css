@@ -1,0 +1,73 @@
+[v-cloak] {
+    display: none;
+}
+
+* {
+    font-family: "Yu Gothic UI", "Meiryo UI", Meiryo, "MS Pgothic", Osaka, "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+}
+
+html,
+body,
+#app {
+    height: 100%;
+}
+
+.sidebar {
+    position: fixed;
+    width: 300px;
+}
+
+.chat-link {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 268px;
+}
+
+.page {
+    padding-left: 300px;
+    padding-bottom: 80px !important;
+}
+
+.chat-title {
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    padding-left: 3px;
+}
+
+.message-content {
+    padding-top: .5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.message-content p,
+.message-content ol,
+.message-content ul {
+    margin-bottom: .5rem;
+}
+
+.message-content h1,
+.message-content h2,
+.message-content h3 {
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.icon-user {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.user-message {
+    z-index: 100;
+    position: fixed;
+    bottom: 0px;
+}
+
+.user-message>.row {
+    margin-right: 300px;
+}

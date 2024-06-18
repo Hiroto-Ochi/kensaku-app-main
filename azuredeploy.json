@@ -1,0 +1,225 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "variables": {
+    "resourcePostfix": "[uniqueString(resourceGroup().id, deployment().name)]",
+    "appServiceName": "[concat('app-', variables('resourcePostfix'))]",
+    "appPlanName": "[concat('asp-', variables('resourcePostfix'))]",
+    "cosmosDBAccountName": "[concat('cosmos-', variables('resourcePostfix'))]",
+    "cosmosDBDatabaseName": "db",
+    "cosmosDBContainerName": "sample-rag-chat",
+    "applicationInsightsName": "[concat('appi-', variables('resourcePostfix'))]",
+    "repositoryUrl": "https://github.com/mahiya/sample-rag-chat-app",
+    "branch": "main"
+  },
+  "parameters": {
+    "openAIServiceAccountEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "使用する Azure OpenAI Service アカウントのエンドポイント"
+      }
+    },
+    "openAIServiceAccountKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "使用する Azure OpenAI Service アカウントのキー"
+      }
+    },
+    "openAIServiceDeployName": {
+      "type": "string",
+      "metadata": {
+        "description": "使用する Azure OpenAI Service アカウントのデプロイの名前"
+      }
+    },
+    "searchEndpoint": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "使用する Azure AI Search アカウントのエンドポイント"
+      }
+    },
+    "searchQueryKey": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "使用する Azure AI Search アカウントのクエリキー"
+      }
+    },
+    "searchIndexName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "使用する Azure AI Search のインデックスの名前"
+      }
+    },
+    "useSemanticSearch": {
+      "type": "string",
+      "allowedValues": [
+        "false",
+        "true"
+      ],
+      "defaultValue": "false",
+      "metadata": {
+        "description": "使用する Azure AI Search でセマンティック検索を使用するかどうか"
+      }
+    },
+    "vectorSearchFieldNames": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "使用する Azure AI Search でベクトル検索をする場合は、ベクトル検索のフィールド名を指定(カンマ区切りで複数指定可能)"
+      }
+    },
+    "bingApiKey": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "使用する Bing Search API の認証キー"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2021-04-15",
+      "name": "[variables('cosmosDBAccountName')]",
+      "location": "[resourceGroup().location]",
+      "kind": "GlobalDocumentDB",
+      "properties": {
+        "databaseAccountOfferType": "Standard",
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "Session"
+        },
+        "locations": [
+          {
+            "locationName": "[resourceGroup().location]",
+            "failoverPriority": 0
+          }
+        ],
+        "capabilities": [
+          {
+            "name": "EnableServerless"
+          }
+        ]
+      }
+    },
+    {
+      "type": "microsoft.insights/components",
+      "apiVersion": "2015-05-01",
+      "name": "[variables('applicationInsightsName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "ApplicationId": "[variables('applicationInsightsName')]",
+        "Request_Source": "IbizaWebAppExtensionCreate"
+      }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2021-02-01",
+      "name": "[variables('appPlanName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "P0V3",
+        "tier": "Premium v3"
+      },
+      "properties": {
+        "reserved": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2021-02-01",
+      "name": "[variables('appServiceName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appPlanName'))]",
+        "siteConfig": {
+          "linuxFxVersion": "PYTHON|3.11",
+          "alwaysOn": true,
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('microsoft.insights/components', variables('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[reference(resourceId('microsoft.insights/components', variables('applicationInsightsName')), '2015-05-01').ConnectionString]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~2"
+            },
+            {
+              "name": "AZURE_OPENAI_ENDPOINT",
+              "value": "[parameters('openAIServiceAccountEndpoint')]"
+            },
+            {
+              "name": "AZURE_OPENAI_API_KEY",
+              "value": "[parameters('openAIServiceAccountKey')]"
+            },
+            {
+              "name": "AZURE_OPENAI_MODEL",
+              "value": "[parameters('openAIServiceDeployName')]"
+            },
+            {
+              "name": "AZURE_COSMOS_CONNECTION_STRING",
+              "value": "[concat('AccountEndpoint=', reference(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDbAccountName')), '2021-04-15').documentEndpoint, ';AccountKey=', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDbAccountName')), '2021-04-15').primaryMasterKey, ';')]"
+            },
+            {
+              "name": "AZURE_COSMOS_DB_NAME",
+              "value": "[variables('cosmosDBDatabaseName')]"
+            },
+            {
+              "name": "AZURE_COSMOS_CONTAINER_NAME",
+              "value": "[variables('cosmosDBContainerName')]"
+            },
+            {
+              "name": "AZURE_SEARCH_ENDPOINT",
+              "value": "[parameters('searchEndpoint')]"
+            },
+            {
+              "name": "AZURE_SEARCH_QUERY_KEY",
+              "value": "[parameters('searchQueryKey')]"
+            },
+            {
+              "name": "AZURE_SEARCH_INDEX_NAME",
+              "value": "[parameters('searchIndexName')]"
+            },
+            {
+              "name": "AZURE_SEARCH_USE_SEMANTIC_SEARCH",
+              "value": "[parameters('useSemanticSearch')]"
+            },
+            {
+              "name": "AZURE_SEARCH_VECTOR_FIELD_NAMES",
+              "value": "[parameters('vectorSearchFieldNames')]"
+            },
+            {
+              "name": "BING_SEARCH_API_KEY",
+              "value": "[parameters('bingApiKey')]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "type": "sourcecontrols",
+          "apiVersion": "2021-02-01",
+          "name": "web",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appServiceName'))]"
+          ],
+          "properties": {
+            "RepoUrl": "[variables('repositoryUrl')]",
+            "branch": "[variables('branch')]",
+            "IsManualIntegration": true
+          }
+        }
+      ],
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDBAccountName'))]",
+        "[resourceId('microsoft.insights/components', variables('applicationInsightsName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('appPlanName'))]"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+[
+    {
+        "type": "function",
+        "function": {
+            "name": "search_web_pages",
+            "description": "Function to search web pages using Microsoft Bing Search API. You can get URLs of web pages related to the search query. You should use this function to get information.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Query to search web page. The search query should be Japanese because users require Japanese web page information."
+                    },
+                    "count": {
+                        "type": "integer",
+                        "description": "Number of web pages to get. Default is 3."
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "Offset (skip count) of web pages to retrieve. If you set count = 3 and offset = 3, you will get web pages ranked from 4th to 6th. The default is 0."
+                    }
+                },
+                "required": [
+                    "query"
+                ]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "search_news",
+            "description": "Function to search web news in Japan using Microsoft Bing News API. You can get the top 3 news related to the search query. You should use this function ONLY if you are requested to get the latest news from an user.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Query to search news. The search query should be Japanese because users require Japanese web news."
+                    },
+                    "count": {
+                        "type": "integer",
+                        "description": "Number of news to get. Default is 3."
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "Offset (skip count) of news to retrieve. If you set count = 3 and offset = 3, you will get news ranked from 4th to 6th. The default is 0."
+                    }
+                },
+                "required": [
+                    "query"
+                ]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "search_documents",
+            "description": "Function to search and retrieve documents containing domain specific information. You should use this function to answer a domain specific question from an user.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Query to search documents. The search query should be Japanese because documents are basically written in Japanese."
+                    },
+                    "count": {
+                        "type": "integer",
+                        "description": "Number of documents to retrieve. Default is 3."
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "Offset (skip count) of documents to retrieve. If you set count = 3 and offset = 3, you will get documents ranked from 4th to 6th. The default is 0."
+                    }
+                },
+                "required": [
+                    "query"
+                ]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_html_by_url",
+            "description": "Function to get HTML of a web page by inputed URL. You should use this function to get and process HTML to answer the question from users.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "description": "UTL to get HTML. Only one URL can be inputed."
+                    }
+                },
+                "required": [
+                    "url"
+                ]
+            }
+        }
+    }
+]
