@@ -28,7 +28,7 @@
     "openAIServiceDeployName": {
       "type": "string",
       "metadata": {
-        "description": "使用する Azure OpenAI Service アカウントのデプロイの名前"
+        "description": "使用する Azure OpenAI Service アカウントのデプロイの名前(Chat Completion API)"
       }
     },
     "searchEndpoint": {
