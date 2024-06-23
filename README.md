@@ -14,7 +14,8 @@ Azure OpenAI Service を活用した RAG の動作をクイックに試してみ
 [Deploy to Azure] ボタンをクリックすると、Azure Portal のカスタムデプロイのページが表示されます。
 ![Azure Portal でデプロイを開始する](.images/deploy-1.jpg)
 
-以下を情報を指定します。
+#### 基本情報の指定
+以下を情報を指定します。Azure OpenAI Service のアカウントは既存のものを使用するため、事前に作成しておく必要があります。
 - Azure リソースをデプロイする先の [Azure サブスクリプション]
 - Azure リソースをデプロイする先の [リソースグループ]
 - 回答生成に使用する Azure OpenAI Service アカウントのエンドポイント
@@ -23,7 +24,8 @@ Azure OpenAI Service を活用した RAG の動作をクイックに試してみ
 
 > 参考: [操作方法: Azure OpenAI Service リソースを作成してデプロイする - Azure OpenAI | Microsoft Learn](https://learn.microsoft.com/ja-jp/azure/ai-services/openai/how-to/create-resource?pivots=webportal)  
 
-もし回答生成の情報源として Azure AI Search を使用する場合は以下を指定します (任意)
+#### (任意) Azure AI Search に関する情報の指定
+もし回答生成の情報源として Azure AI Search を使用する場合は以下を指定します。
 - Azure AI Search アカウントのエンドポイント
 - Azure AI Search アカウントのクエリキー
 - Azure AI Search アカウントでのインデックスの名前
@@ -32,10 +34,13 @@ Azure OpenAI Service を活用した RAG の動作をクイックに試してみ
 
 > 参考: [ポータルで Search サービスを作成する - Azure AI Search | Microsoft Learn](https://learn.microsoft.com/ja-jp/azure/search/search-create-service-portal)  
 
+#### (任意) Bing Search API に関する情報の指定
 もし回答生成の情報源として Bing Search API ([Bing Web Search API](https://learn.microsoft.com/en-us/bing/search-apis/bing-web-search/overview), [Bing News Search API](https://learn.microsoft.com/en-us/bing/search-apis/bing-news-search/overview)) を使用する場合は以下を指定します (任意)
 - Bing Search リソースの API キー
 
 > 参考: [Create Bing Search Services Resource - Bing Search Services | Microsoft Learn](https://learn.microsoft.com/ja-jp/bing/search-apis/bing-web-search/create-bing-search-service-resource)
+
+#### デプロイの実行
 
 必要な情報を入力したら、[確認と作成]ボタンをクリックします。
 
