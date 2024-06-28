@@ -77,3 +77,76 @@ Azure Web Apps の Easy Auth 機能を使うことで、デプロイした Web �
 
 Web アプリケーションへアクセスすると、Web アプリケーションがログインユーザの一部情報を使用することを許諾するページが表示されます。[承諾]をクリックすると、チャットアプリが使えるようになることが分かります。また、シークレットブラウズ等でアクセスすると、認証を求められることが分かります。
 ![認証設定](.images/set-auth-3.jpg)
+
+## ローカル環境での Web アプリケーションの実行
+
+### 設定ファイルの用意
+```.env_template```ファイルをコピーして、```.env```ファイルを生成します。  
+そして、```.env```ファイルのうち、以下のパラメータを設定します。
+- APPLICATIONINSIGHTS_CONNECTION_STRING
+- AZURE_OPENAI_ENDPOINT
+- AZURE_OPENAI_API_KEY
+- AZURE_OPENAI_MODEL
+- AZURE_COSMOS_CONNECTION_STRING
+- AZURE_COSMOS_DB_NAME
+- AZURE_COSMOS_CONTAINER_NAME
+- BING_SEARCH_API_KEY (任意)
+- AZURE_SEARCH_ENDPOINT (任意)
+- AZURE_SEARCH_QUERY_KEY (任意)
+- AZURE_SEARCH_INDEX_NAME (任意)
+- AZURE_SEARCH_USE_SEMANTIC_SEARCH (任意)
+- AZURE_SEARCH_VECTOR_FIELD_NAMES (任意)
+
+### Python パッケージのインストール
+
+#### (任意) Python 仮想環境の用意
+必要に応じて、Python の仮想環境を構築します。以下は、venv を使った構築方法です。```.venv```という名前の仮想環境を構築しています。
+```sh
+python -m venv .venv
+```
+
+以下のコマンドで、仮想環境を有効化できます。
+```sh
+source .venv/Scripts/activate
+
+# Power Shell の場合は以下の通り
+# > . .\venv\Scripts\Activate.ps1
+```
+
+#### パッケージのインストール
+以下のコマンドで、必要な Python パッケージをインストールします。
+```sh
+python -m pip install -r requirements.txt
+```
+
+### Web アプリケーションの実行
+以下のコマンドで、Web アプリケーションを実行します。
+```sh
+python app.py
+```
+
+[http://127.0.0.1:5000](http://127.0.0.1:5000) へアクセスすることで、ローカルで起動している Web アプリケーションへアクセスできます。
+
+
+## ローカルで修正した Web アプリケーションの Azure へのデプロイ
+修正した Web アプリケーションを Azure 環境へ反映させる方法は以下の通りです。
+
+### Azure Web Apps のデプロイ設定の変更
+デプロイした Azure Web Apps リソースのページを表示し、サイドメニューの[デプロイメント]>[デプロイ センター]をクリックします。  
+すると、Web Apps のデプロイ設定が表示されるので、[ソース]欄の "外部 Git" と書いてある下にある[切断]リンクをクリックします。  
+"デプロイとの接続を切断しますか?"と表示されるので、[OK]ボタンをクリックします。  
+この作業を行うことで、Web Apps はデプロイされているコードを格納している GitHub リポジトリ [mahiya/sample-rag-chat-app](https://github.com/mahiya/sample-rag-chat-app) との接続が解除されるため、そのリポジトリのコード以外を、この Web Apps リソースにデプロイできるようになります。
+
+### Azure Web Apps へのデプロイ
+
+[deploy.sh](deploy.sh)の以下のパラメータを修正します。
+- RETION
+- RESOURCE_GROUP
+- APP_SERVICE_PLAN_NAME
+- APP_SERVICE_NAME
+
+そして、以下の通りに [deploy.sh](deploy.sh) を実行することで、ローカルで修正したコードを Azure 環境へ反映させることができます。  
+スクリプト実行後、反映には時間がかかる場合があります。
+```
+./deploy.sh
+```

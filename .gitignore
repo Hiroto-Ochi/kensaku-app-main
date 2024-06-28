@@ -1,5 +1,5 @@
 .env
 .venv
+.azure
 .ignore
-.archive
 __pycache__
