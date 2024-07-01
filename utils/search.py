@@ -13,7 +13,7 @@ class AzureSearchClient:
         key = os.getenv("AZURE_SEARCH_QUERY_KEY")
         api_version = os.getenv("AZURE_SEARCH_API_VERSION", "2024-03-01-preview")
         index_name = index_name or os.getenv("AZURE_SEARCH_INDEX_NAME")
-        self.use_semantic_search = os.getenv("AZURE_SEARCH_USE_SEMANTIC_SEARCH", False)
+        self.use_semantic_search = True if os.getenv("AZURE_SEARCH_USE_SEMANTIC_SEARCH") == "true" else False
         self.vector_field_names = os.getenv("AZURE_SEARCH_VECTOR_FIELD_NAMES", "")
         self.vector_field_names = self.vector_field_names.split(",") if self.vector_field_names else []
 
