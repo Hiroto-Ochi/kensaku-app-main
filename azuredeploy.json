@@ -136,6 +136,7 @@
         "siteConfig": {
           "linuxFxVersion": "PYTHON|3.11",
           "alwaysOn": true,
+          "http20Enabled": true,
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -198,7 +199,8 @@
               "value": "[parameters('bingApiKey')]"
             }
           ]
-        }
+        },
+        "httpsOnly": true
       },
       "resources": [
         {
