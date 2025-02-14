@@ -7,9 +7,9 @@
     "appPlanName": "[concat('asp-', variables('resourcePostfix'))]",
     "cosmosDBAccountName": "[concat('cosmos-', variables('resourcePostfix'))]",
     "cosmosDBDatabaseName": "db",
-    "cosmosDBContainerName": "sample-rag-chat",
+    "cosmosDBContainerName": "jkk-kensaku-chat",
     "applicationInsightsName": "[concat('appi-', variables('resourcePostfix'))]",
-    "repositoryUrl": "https://github.com/mahiya/sample-rag-chat-app",
+    "repositoryUrl": "https://github.com/01047477_ruser/kensaku-app-main",
     "branch": "main"
   },
   "parameters": {
