@@ -10,7 +10,7 @@ class OpenAIClient:
         self.client = AzureOpenAI(
             azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),
             api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
-            api_version=os.environ.get("AZURE_OPENAI_API_VERSION", "2024-08-06-preview"),
+            api_version=os.environ.get("AZURE_OPENAI_API_VERSION", "2024-08-01-preview"),
 #            api_version=os.environ.get("AZURE_OPENAI_API_VERSION", "2024-05-01-preview"),
         )
         # 各種設定値を環境変数から取得
